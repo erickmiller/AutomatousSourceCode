@@ -7,6 +7,6 @@ Inductive programming is a unique area of Artificial Intelligence focused on the
 
 ### How does it work?
 
-This is clearly a computationally intractable problem.  So how does it acheive it's impressive results?  The pre-trained Neural Networks are serving a dual purpose: both as intelligent symbolic logic sequence predictors, as well as effectively limiting the dimensionality of the Abstract Syntax Tree's potentially otherwise very very large  (unknownly and possibly infinitely large; provably NP Hard) logic tree search space (the powerset search space).
+This is clearly a computationally intractable problem.  So how does it acheive it's impressive results?  The pre-trained Neural Networks are serving a dual purpose: both as intelligent symbolic logic sequence predictors, as well as effectively limiting the dimensionality of the Abstract Syntax Tree's potentially otherwise very very large  (unknowably and possibly infinitely large; provably NP Hard) logic tree search space (the powerset search space).
 
 ![Diagram To Accompany Explanation of Recurrent Model / Algorithm](https://github.com/erickmiller/AutomatousSourceCode/blob/master/asc.png)
