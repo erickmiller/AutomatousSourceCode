@@ -12,7 +12,8 @@ This is clearly a computationally intractable problem.  So how does it acheive i
 ![Diagram To Accompany Explanation of Recurrent Model / Algorithm](https://github.com/erickmiller/AutomatousSourceCode/blob/master/asc.png)
 
 ### Results
-To review and derive meaning from the results achieved, browse the Addendum data included. The first two most interesting and encouraging results accomplished are that first, in all cases the model was able to predict an answer that is equivalent to the Oracle and second the model was able to generalize to create new, related functions without needing new training data (ie the model for “Square Rpot” was used to generalize squared, divide by two, and a doubling function).
+To review and derive meaning from the results achieved, browse the Addendum data included. The first two most interesting and encouraging results accomplished are that first, in all cases the model was able to predict an answer that is equivalent to the Oracle and second the model was able to generalize to create new, related functional programs as complete python functions including simple mathematical logic, without needing new training data (ie the model for “Square Root” was used to generalize squared, divide by two, and a doubling function).
+
 By far, the most impressive result can be seen in Addendum 6a – the neural network appears to have learned Newton's method for finding the square root of any number!  
 
 For more, read the full paper available in this repo https://github.com/erickmiller/AutomatousSourceCode/blob/master/AutomatousSourceCode.pdf
