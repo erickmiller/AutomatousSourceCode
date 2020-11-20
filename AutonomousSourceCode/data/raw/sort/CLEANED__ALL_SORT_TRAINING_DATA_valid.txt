@@ -1,0 +1,2866 @@
+, y: y - x);
+
+class Test:
+    def __init__(self, id, value):
+        self.id = id
+        self.value = value
+    def __repr__(self):
+        return "id: " + str(self.id) + " value: " + self.value
+
+d = [ Test(4, "test"), Test(3, "test"), Test(6, "test"), Test(1, "test"), Test(2, "test"), Test(9, "test"), Test(0, "test") ]
+print sorted(d, lambda x, y: y - x, lambda x: x.id, True)
+
+print c
+print sorted(c, None, None, True)
+
+c.sort(reverse=True)
+print c
+c.sort()
+print c
+c.sort(lambda x, y: y - x, lambda x: pow(x, 2), True)
+print c
+
+L = [7, 3, -2, 4]
+d = {'a': 5, 'b': 9}
+
+def g(k):
+    return d[k]
+
+print(g('a'))
+print(sorted(d.keys(), None, g))
+
+print(sorted(d.keys(), None, None))
+
+print(sorted(d.keys(), None, lambda x: d[x]))
+
+def myabs(x):
+    return abs(x)
+
+print(sorted(L, None, myabs))
+print(sorted(L, None, lambda x: myabs(x)))
+
+print(sorted(L, None, lambda x: abs(x)))
+
+print(sorted(L, None, abs))
+
+print(sorted(L, key=lambda x: -x, reverse=True))
+
+print(sorted(L, key=lambda x: -x))
+
+
+"""
+File: quicksort.py
+Author: Hong-Wei Ng
+Email: lightalchemist@gmail.com
+Github: https://github.com/lightalchemist
+Description: Recursive implementation of quicksort
+to sort an array A in place.
+"""
+
+import random
+
+def partition(A, p, begin, end):
+    """Partition the subarray A[begin:end] about the pivot p
+    where begin <= p < end
+    and return the new index of the pivot in the A."""
+    pivot = A[p]
+    left = begin
+    right = end - 2
+    A[p], A[end-1] = A[end-1], A[p]
+
+    while left < right:
+        if A[left] <= pivot:
+            left += 1
+        else:
+            A[left], A[right] = A[right], A[left]
+            right -= 1
+
+
+
+
+    if A[left] <= pivot:
+        A[right + 1], A[end-1] = A[end-1], A[right + 1]
+        return right + 1
+    else:
+        A[left], A[end-1] = A[end-1], A[left]
+        return left
+
+
+def pick_pivot(begin, end):
+    """Return index of pivot which is a value in [begin, end)."""
+    return random.randint(begin, end-1)
+
+
+def quicksort_helper(A, begin, end):
+    if end - begin <= 1:
+        return A
+
+    p = pick_pivot(begin, end)
+    p = partition(A, p, begin, end)
+    quicksort_helper(A, begin, p)
+    quicksort_helper(A, p+1, end)
+
+
+def sort(A):
+    """"Recursive implementation of Quicksort
+    to sort an array A in place."""
+    quicksort_helper(A, 0, len(A))
+    return A
+
+
+def test():
+    S = []
+    S_sorted = sort(S)
+    assert S_sorted == []
+
+    S = [-1]
+    S_sorted = sort(S)
+    assert S_sorted == [-1]
+
+    S = [-1, -3]
+    S_sorted = sort(S)
+    assert S_sorted == [-3, -1]
+
+    S = [2, 2, -1, -1, 3, 10, 100]
+    S_sorted = sort(S)
+    assert S_sorted == sorted(S)
+
+    S = [2, 3, -1, 0, 5]
+    S_sorted = sort(S)
+    assert S_sorted == sorted(S)
+
+    S = range(20)
+    random.shuffle(S)
+    S_sorted = sort(S)
+    assert S_sorted == sorted(S)
+
+    S = range(20)
+    random.shuffle(S)
+    S = [s if random.randint(0, 1) else -s for s in S]
+    S_sorted = sort(S)
+    assert S_sorted == sorted(S)
+
+    S = range(10)
+    S_sorted = sort(S)
+    assert S_sorted == sorted(S)
+
+
+if __name__ == '__main__':
+    test()
+class Anagram:
+    def __init__(self, test_word):
+        self.word = test_word
+        self.sorted_word = self._sort_word(test_word)
+
+    def match(self, candidates):
+        matches = []
+        for candidate in candidates:
+            if candidate == self.word:
+                continue
+            if self._sort_word(candidate) == self.sorted_word:
+                matches.append(candidate)
+        return matches
+
+    def _sort_word(self, word):
+        return sorted(list(word.lower()))
+
+
+class ContentViewletManager(object):
+    def sort(self, viewlets):
+        return sorted(viewlets, lambda x, y: cmp(x[0], y[0]))
+import operator
+def sort_by_attr(seq, attr):
+    return sorted(seq, key=operator.attrgetter(attr))
+def sort_by_attr_inplace(lst, attr):
+    lst.sort(key=operator.attrgetter(attr))
+__author__ = 'Ronaldo'
+
+import pandas as pd
+
+class SortingStore:
+
+
+    class LookupModes:
+        EXACT_MATCH, EXACT_OR_GREATER = range(2)
+
+    def __init__(self, dataframe):
+        self.df = dataframe
+        self.sorted_views = {}
+
+    def set_sorted_view(self, sorted_view, key_column, ascending):
+        self.df = sorted_view
+        self.sorted_views = {key_column + `ascending`:sorted_view}
+
+    def get_sorted_view(self, key_column, ascending):
+
+        sorted_view = self.sorted_views.get(key_column + `ascending`)
+
+        if not isinstance(sorted_view,pd.DataFrame):
+            sorted_view = self.df.sort_index(by=[key_column], ascending=[0])
+            self.sorted_views[key_column + `ascending`] = sorted_view
+
+        return sorted_view
+
+
+    def lookup(self, key_column, key_value, ascending=1, lookupMode = LookupModes.EXACT_MATCH):
+
+        sorted_view = self.get_sorted_view(key_column, ascending)
+
+        if lookupMode == self.LookupModes.EXACT_OR_GREATER:
+            a = sorted_view[sorted_view[key_column]>=key_value]
+            return a.irow(-1)
+
+
+
+import unittest
+import random
+import HW3
+
+N = 100
+random_array = range(1, N)
+random.shuffle(random_array)
+sorted_array = sorted(random_array)
+
+class TestSortMethods(unittest.TestCase):
+
+  def setUp(self):
+    return
+
+  def test_mergeSort(self):
+      self.assertEqual(HW3.mergeSort(random_array), sorted_array)
+
+  def test_bubblesort(self):
+      self.assertEqual(HW3.bubblesort(random_array), sorted_array)
+
+  def test_quicksort(self):
+      self.assertEqual(sorted(random_array), sorted_array)
+
+if __name__ == '__main__':
+    unittest.main()import urllib
+import urllib2
+
+from basesort import BaseSort
+
+
+class HerokuSort(BaseSort):
+
+    def exec_request(self):
+
+        data = urllib.urlencode({'css': self.original})
+        ua = 'Sublime Text 2 - CSScomb'
+        req = urllib2.Request("http://csscomb.herokuapp.com/sort.php", data, headers={'User-Agent': ua})
+        file = urllib2.urlopen(req, timeout=10)
+
+        sorted_css = file.read()
+
+        if len(sorted_css) > 0:
+            return sorted_css
+        else:
+            return None
+try:
+
+
+    [].sort(key=lambda: None)
+
+    def sorted(iterable, cmp=None, key=None, reverse=False):
+        l = list(iterable)
+        l.sort(cmp=cmp, key=key, reverse=reverse)
+        return l
+
+except TypeError:
+
+
+    def sorted(iterable, key=None, reverse=False):
+        l = list(iterable)
+        if key:
+            l = [(key(i), i) for i in l]
+        l.sort()
+        if key:
+            l = [i[1] for i in l]
+        if reverse:
+            l.reverse()
+        return l
+def insertionsort(L):
+	return calInsertionsort(L, 0)
+
+def calInsertionsort(L, sortedIdx):
+	if sortedIdx + 1 == len(L):
+		return L
+
+	sortData = L[sortedIdx+1]
+
+	for idx in xrange(0, sortedIdx + 1):
+		if sortData < L[idx]:
+			del L[sortedIdx+1]
+			L.insert(idx, sortData)
+			break
+
+	return calInsertionsort(L, sortedIdx+1)""" Say you have an array for which the ith element is the price of a given stock on day i."""
+""" If you were only permitted to complete at most one transaction (ie, buy one and sell one share of the stock), design an algorithm to find the maximum profit."""
+
+def maxProfit(prices):
+
+	max_profit = get_maxProfit(prices)
+	return max_profit
+
+
+def get_maxProfit(prices):
+	min_so_far = float("inf")
+	max_profit_so_far = 0
+	for price in prices:
+		if (price - min_so_far) > max_profit_so_far:
+			max_profit_so_far = (price - min_so_far)
+		if price < min_so_far:
+			min_so_far = price
+	return max_profit_so_far
+
+
+def adjusted_merge_sort(prices):
+	length = len(prices)
+	if length == 1:
+		return prices, 0
+	middle_idx = length/2
+	first_part, second_part = prices[:middle_idx], prices[middle_idx:]
+	first_sorted, first_max_profit = adjusted_merge_sort(first_part)
+	second_sorted, second_max_profit = adjusted_merge_sort(second_part)
+	max_profit = second_sorted[-1] - first_sorted[0]
+	if max_profit < first_max_profit:
+		max_profit = first_max_profit
+	if max_profit < second_max_profit:
+		max_profit = second_max_profit
+	new_sorted = []
+	i, j = 0, 0
+	while i<len(first_sorted) and j<len(second_sorted):
+		if first_sorted[i] < second_sorted[j]:
+			new_sorted.append(first_sorted[i])
+			i += 1
+		else:
+			new_sorted.append(second_sorted[j])
+			j += 1
+	while i < len(first_sorted):
+		new_sorted.append(first_sorted[i])
+		i += 1
+	while j < len(second_sorted):
+		new_sorted.append(second_sorted[j])
+		j += 1
+	return new_sorted, max_profit
+
+if __name__ == '__main__':
+	prices = [4, 5, 2, 10, 1, 3]
+	print maxProfit(prices)
+def detect_anagrams(word, word_list):
+    sort = sorted(word.lower())
+    return [w for w in word_list if sorted(w.lower()) == sort and w.lower() != word.lower()]
+
+
+from lixian_plugins.api import task_filter
+
+@task_filter(protocol='sort', batch=True)
+def sort_by_name(keyword, tasks):
+	'''
+	Example:
+	lx list sort:
+	lx download 0/sort:/[0-1]
+	'''
+	return sorted(tasks, key=lambda x: x['name'])
+from heap import Heap
+
+def insertion_sort(array):
+	"""
+	Standard insertion sort alogrithm
+
+	Arguments:
+		array - array of numbers
+
+	Returns:
+		array - array sorted in increasing order
+	"""
+
+	for i in range(1, len(array)):
+		j = i - 1
+		while j >= 0 and array[j] > array[i]:
+			array[i], array[j] = array[j], array[i]
+			i = j
+			j-=1
+
+	return array
+
+def selection_sort(array):
+	"""
+	Standard selection sort algorithm.
+
+	Arguments:
+		array - array of numbers
+
+	Returns:
+		array - array sorted in increasing order
+	"""
+
+	for i in range(0, len(array)-1):
+
+		min_index = None
+
+		for j in range(i, len(array)):
+
+			if not min_index:
+				min_index = j
+			else:
+				if array[j] < array[min_index]:
+					min_index = j
+		array[i], array[min_index] = array[min_index], array[i]
+
+	return array
+
+def merge(array1, array2):
+	"""
+	Take two sorted arrays and merge them in sorted order.
+
+	Arguments:
+		array1 - first array to be sorted
+		array2 - second array to be sorted
+
+	Returns:
+		sorted_array - merged arrays in sorted manner
+	"""
+
+	sorted_array = []
+	while array1 and array2:
+		if array1[0] < array2[0]:
+			sorted_array.append(array1.pop(0))
+		else:
+			sorted_array.append(array2.pop(0))
+
+	if not array1:
+		sorted_array.extend(array2)
+	elif not array2:
+		sorted_array.extend(array1)
+
+	return sorted_array
+
+def merge_sort(array):
+	"""
+	Merge sort a given array in ascending order
+
+	Arguments:
+		array - potentially unsorted array
+
+	Returns:
+		sorted_array - sorted array in ascending order
+	"""
+	if len(array) == 1 or not array:
+		return array
+
+	else:
+		sorted_array = merge(merge_sort(array[0:len(array)/2]), merge_sort(array[len(array)/2:]))
+
+	return sorted_array
+
+def quick_sort(array, start=0, end=None):
+	"""
+	Perform a quick sort in place
+
+	Arguments:
+		array - array to be sorted
+		start - starting index of array to be sorted
+		end - end index of array to be sorted
+
+	Returns:
+		array - sorted array
+	"""
+
+	if not array:
+		return
+
+	if not end:
+		end = len(array)-1
+
+	pivot = end
+	curr_index = start
+
+	while curr_index != pivot:
+		if array[curr_index] > array[pivot]:
+			array[curr_index], array[pivot-1] = array[pivot-1], array[curr_index]
+			array[pivot-1], array[pivot] = array[pivot], array[pivot-1]
+			curr_index = start
+			pivot-=1
+		else:
+			curr_index+=1
+
+	if pivot - start > 1:
+		quick_sort(array, start, pivot-1)
+	if pivot < end-2:
+		quick_sort(array, pivot + 1, end)
+
+	return array
+
+def heap_sort(array):
+	"""
+	Performs a heap sort
+
+	Arguments:
+		array - array of integers to be sorted
+
+	Returns:
+		array - sorted array
+	"""
+
+	sorted_array = []
+	array_heap = Heap(array)
+
+	while array_heap.size > 0:
+		sorted_array.append(array_heap.remove())
+
+	return sorted_arrayimport collections
+
+
+class School(object):
+
+    def __init__(self, school_name):
+        self.school_name = school_name
+        self.db = collections.defaultdict(set)
+
+    def __str__(self):
+        return self.school_name
+
+    def add(self, student, grade):
+        self.db[grade].add(student)
+
+    def grade(self, grade_number):
+        return self.db[grade_number]
+
+    def sort(self):
+        grades = sorted([key for key in self.db])
+        sorted_list = [(grade, tuple(sorted([name for name in self.db[grade]]))) for grade in grades]
+        return sorted_listtry:
+
+
+    [].sort(key=lambda: None)
+
+    def sorted(iterable, cmp=None, key=None, reverse=False):
+        l = list(iterable)
+        l.sort(cmp=cmp, key=key, reverse=reverse)
+        return l
+
+except TypeError:
+
+
+    def sorted(iterable, key=None, reverse=False):
+        l = list(iterable)
+        if key:
+            l = [(key(i), i) for i in l]
+        l.sort()
+        if key:
+            l = [i[1] for i in l]
+        if reverse:
+            l.reverse()
+        return l
+def bubble_sort(list):
+    sorted_list = list[:]
+
+    for i in range(0, len(sorted_list)):
+        for j in range(0, len(sorted_list) - 1):
+            if sorted_list[j] > sorted_list[j + 1]:
+                temp = sorted_list[j]
+                sorted_list[j] = sorted_list[j + 1]
+                sorted_list[j + 1] = temp
+
+    return sorted_list
+"""
+diteur de Spyder
+
+Ceci est un script temporaire.
+"""
+
+from operator import itemgetter
+
+
+def sort_a_list(l):
+    return sorted(l, reverse=True)
+
+
+def sort_by_mark(my_class):
+    return sorted(my_class, reverse=True)
+
+
+def sort_by_name(my_class):
+    return sorted(my_class, key=itemgetter(1))
+
+import random
+
+def exercise_sort(sort, gen=random.random):
+    """Run some tests on the sorting function, sort"""
+    for n in [0, 1, 100, 1000, 10000]:
+        a = [gen() for _ in range(n)]
+        b = a[:]
+
+        c = sort(b)
+        if c is None: c = b
+        assert(sorted(a) == list(c))
+
+
+import unittest
+from random import randrange
+from sorting import *
+
+TEST_TIMES = 10
+ARRAY_LENGTH = 10
+
+
+def create_random_list():
+    return [randrange(-10, 10) for i in range(ARRAY_LENGTH)]
+
+
+def sort(unsorted_list):
+    return unsorted_list.sort()
+
+
+class TestCase(unittest.TestCase):
+    def setUp(self):
+        self.lists = [create_random_list() for i in range(TEST_TIMES)]
+
+    def test_bubble_sort(self):
+        for lis in self.lists:
+            li = lis
+            assert bubble_sort(li) == sorted(lis)
+
+    def test_insert_sort(self):
+        for lis in self.lists:
+            li = lis
+            assert insert_sort(li) == sorted(lis)
+
+    def test_select_sort(self):
+        for lis in self.lists:
+            li = lis
+            assert select_sort(li) == sorted(lis)
+
+    def test_quick_sort(self):
+        for lis in self.lists:
+            li = lis
+            quick_sort(li, 0, ARRAY_LENGTH-1)
+            assert li == sorted(lis)
+
+
+if __name__ == '__main__':
+    unittest.main()def sort_fractions(fractions):
+	return sorted(fractions, key = lambda x: x[0]/x[1])
+import numpy as np
+
+def argSort(seq):
+    return sorted(range(len(seq)), key=seq.__getitem__)
+
+def block(im, p, r = 7):
+    return im[p[1]-r:p[1]+r,p[0]-r:p[0]+r,:]
+
+def cond(arr, c):
+  return arr[c.argsort()[len(c)-sum(c):]]
+def merge(list1, list2):
+  i = 0
+  j = 0
+  output = []
+  len1 = len(list1)
+  len2 = len(list2)
+  while i < len1 or j < len2:
+    if i < len1 and j < len2:
+      if list1[i] < list2[j]:
+        output += [list1[i]]
+        i = i+1
+      else:
+        output += [list2[j]]
+        j = j+1
+    elif i < len1:
+      output += [list1[i]]
+      i = i+1
+    elif j < len2:
+      output += [list2[j]]
+      j = j+1
+  return output
+
+
+def merge_sort(list):
+  length = len(list)
+  if length <= 1:
+    return list
+  else:
+    mid = length/2
+    left = list[0:mid]
+    right = list[mid:]
+    sorted_left = merge_sort(left)
+    sorted_right = merge_sort(right)
+    return merge(sorted_left, sorted_right)
+
+def get_input():
+	a=[]
+	while(1):
+	  x = int(raw_input())
+	  if(x==-1):
+	     break
+	  a.append(x)
+        return a
+
+def display_result(sorted_nums):
+	print sorted_nums
+
+
+if __name__ == '__main__':
+
+	print "enter the numbers to be sorted and -1 to exit "
+	nums = get_input()
+
+	sorted_nums = merge_sort(nums)
+
+	print "sorted numbers: "
+	display_result(sorted_nums)
+import sys
+
+def readWords(argv):
+  f = open(argv)
+  str = f.read()
+  f.close
+  return str
+
+def sortDictionary(dictionary):
+  sorted_dictionary = [(v,k) for k,v in dictionary.items()]
+  sorted_dictionary.sort()
+  sorted_dictionary.reverse()
+  return sorted_dictionary
+
+def insertWords2Dictionary(str_list):
+  dictionary = {}
+  for word in str_list:
+    dictionary[word] = dictionary.get(word, 0) + 1
+  return dictionary
+
+str = readWords(sys.argv[1])
+str_list = str.split()
+dictionary = insertWords2Dictionary(str_list)
+sorted_dictionary = sortDictionary(dictionary)
+print "All count is" ,len(str_list)
+for count, word in sorted_dictionary[:20]:
+    print count, word
+def slaveSort(seq):
+    '''
+    Given a sequence of sequences, sort all according to the
+    sort order of the first sequence.
+    '''
+    z = list(zip(*seq))
+    z.sort()
+    return zip(*z)
+
+
+if __name__ == '__main__':
+    lists = (('cat', 'bat', 'rat'),(1,2,3),(4,5,6))
+    sortedLists = slaveSort(lists)
+    for l in sortedLists:
+        print(l)def sort_a_list(l):
+   x = sorted
+   return x(l, reverse=True)
+from operator import attrgetter, itemgetter
+getcount = itemgetter(0)
+def sort_by_mark(my_class):
+    i = sorted
+    return i(my_class,  key=getcount, reverse=True)
+getcounts = itemgetter(1)
+def sort_by_name(my_class):
+    i = sorted
+    return i(my_class,  key=getcounts)
+def sort_a_list(l):
+    return sorted(l, reverse=True)
+
+
+def sort_by_mark(my_class):
+    return sorted(my_class, reverse=True)
+
+
+from operator import itemgetter
+
+
+def sort_by_name(my_class):
+    return sorted(my_class, key=itemgetter(1))
+from Rnaseq import *
+
+class sort_by_sample(Step):
+    def __init__(self,**kwargs):
+        Step.__init__(self,**kwargs)
+
+    def usage(self,context):
+        usage='''
+sort -k5,6 ${inputs[0]} > ${ID}.sorted.sample
+        '''
+        return usage
+
+    def output_list(self,*args):
+        return ['${ID}.sorted.sample']
+
+
+
+""" sort the count of words and display top 3 along with count"""
+
+import sys
+
+
+def getSortedCounts(wordCountFileName, separator):
+    sortedCounts = []
+    with open(wordCountFileName, 'r') as wordCountFile:
+        for line in wordCountFile:
+
+            line = line.strip()
+            word, count = line.split(separator, 1)
+            try:
+                sortedCounts.append((word, int(count)))
+            except ValueError:
+
+                pass
+    sortedCounts = sorted(sortedCounts, key = lambda wCount: wCount[1])
+    return sortedCounts
+
+
+
+
+
+def main():
+    if len(sys.argv) >= 2:
+        wordCountFileName = sys.argv[1]
+        sortedCounts = getSortedCounts(wordCountFileName, '\t')
+
+        print sortedCounts[0][0], '\t', sortedCounts[0][1]
+        print sortedCounts[1][0], '\t', sortedCounts[1][1]
+        print sortedCounts[2][0], '\t', sortedCounts[2][1]
+    else:
+        print 'Err: word count file should be passed'
+
+if __name__ == '__main__':
+    main()
+
+
+def sort_last(x):
+    return sorted(x, key=lambda x:x[-1])
+
+print sort_last([[1, 3], [3, 2], [2, 1]])
+print sort_last([[2, 3], [1, 2], [3, 1]])
+print sort_last([[1, 7], [1, 3], [3, 4, 5], [2, 2]])
+def process_item(self, item, spider):
+    return sorted(item['body'])
+from heap import Heap
+
+def insertion_sort(array):
+	"""
+	Standard insertion sort alogrithm
+
+	Arguments:
+		array - array of numbers
+
+	Returns:
+		array - array sorted in increasing order
+	"""
+
+	for i in range(1, len(array)):
+		j = i - 1
+		while j >= 0 and array[j] > array[i]:
+			array[i], array[j] = array[j], array[i]
+			i = j
+			j-=1
+
+	return array
+
+def selection_sort(array):
+	"""
+	Standard selection sort algorithm.
+
+	Arguments:
+		array - array of numbers
+
+	Returns:
+		array - array sorted in increasing order
+	"""
+
+	for i in range(0, len(array)-1):
+
+		min_index = None
+
+		for j in range(i, len(array)):
+
+			if not min_index:
+				min_index = j
+			else:
+				if array[j] < array[min_index]:
+					min_index = j
+		array[i], array[min_index] = array[min_index], array[i]
+
+	return array
+
+def merge(array1, array2):
+	"""
+	Take two sorted arrays and merge them in sorted order.
+
+	Arguments:
+		array1 - first array to be sorted
+		array2 - second array to be sorted
+
+	Returns:
+		sorted_array - merged arrays in sorted manner
+	"""
+
+	sorted_array = []
+	while array1 and array2:
+		if array1[0] < array2[0]:
+			sorted_array.append(array1.pop(0))
+		else:
+			sorted_array.append(array2.pop(0))
+
+	if not array1:
+		sorted_array.extend(array2)
+	elif not array2:
+		sorted_array.extend(array1)
+
+	return sorted_array
+
+def merge_sort(array):
+	"""
+	Merge sort a given array in ascending order
+
+	Arguments:
+		array - potentially unsorted array
+
+	Returns:
+		sorted_array - sorted array in ascending order
+	"""
+	if len(array) == 1 or not array:
+		return array
+
+	else:
+		sorted_array = merge(merge_sort(array[0:len(array)/2]), merge_sort(array[len(array)/2:]))
+
+	return sorted_array
+
+def quick_sort(array, start=0, end=None):
+	"""
+	Perform a quick sort in place
+
+	Arguments:
+		array - array to be sorted
+		start - starting index of array to be sorted
+		end - end index of array to be sorted
+
+	Returns:
+		array - sorted array
+	"""
+
+	if not array:
+		return
+
+	if not end:
+		end = len(array)-1
+
+	pivot = end
+	curr_index = start
+
+	while curr_index != pivot:
+		if array[curr_index] > array[pivot]:
+			array[curr_index], array[pivot-1] = array[pivot-1], array[curr_index]
+			array[pivot-1], array[pivot] = array[pivot], array[pivot-1]
+			curr_index = start
+			pivot-=1
+		else:
+			curr_index+=1
+
+	if pivot - start > 1:
+		quick_sort(array, start, pivot-1)
+	if pivot < end-2:
+		quick_sort(array, pivot + 1, end)
+
+	return array
+
+def heap_sort(array):
+	"""
+	Performs a heap sort
+
+	Arguments:
+		array - array of integers to be sorted
+
+	Returns:
+		array - sorted array
+	"""
+
+	sorted_array = []
+	array_heap = Heap(array)
+
+	while array_heap.size > 0:
+		sorted_array.append(array_heap.remove())
+
+	return sorted_arrayimport unittest
+
+def counting_sort(list_to_sort, max):
+    possition = [ 0 for i in range(max + 2)]
+
+    for e in list_to_sort:
+        possition[e] += 1
+
+    sum = 0
+    for i in range(max + 2):
+        temp = possition[i]
+        possition[i] = sum
+        sum += temp
+
+    sorted_list = [0]*len(list_to_sort)
+    for i in range(len(sorted_list)):
+        sorted_list[possition[list_to_sort[i]]] = list_to_sort[i]
+        possition[list_to_sort[i]] += 1
+
+    return sorted_list
+
+class Test_counting_sort(unittest.TestCase):
+    def test_sort_empty(self):
+        self.assertEqual(counting_sort([],0),[])
+
+    def test_sort_one_element(self):
+        self.assertEqual(counting_sort([1],1),[1])
+
+    def test_sort_two_sorted_elements(self):
+        self.assertEqual(counting_sort([1,2],2),[1,2])
+
+    def test_sort_two_unsorted_elements(self):
+        self.assertEqual(counting_sort([2,1],2),[1,2])
+
+    def test_sort_three_unsorted_elements(self):
+        self.assertEqual(counting_sort([2,1,3],3),[1,2,3])
+
+    def test_sort_three_reverse_elements(self):
+        self.assertEqual(counting_sort([3,2,1],3),[1,2,3])
+
+    def test_sort_random_numbers(self):
+        import random
+
+        random_list = [random.randint(0,100) for i in range(1000)]
+        sorted_list = counting_sort(random_list[:],100)
+
+        random_list.sort()
+        self.assertEqual(sorted_list,random_list)
+
+    def test_sort_5_elements(self):
+        self.assertEqual(counting_sort([4,3,1,2,3],4),[1,2,3,3,4])
+
+if __name__ == "__main__":
+    unittest.main()def sort(arr):
+    return sorted(arr)
+    return sorted(l, reverse=True)
+
+
+from operator import itemgetter
+
+
+def sort_by_mark(my_class):
+    return sorted(my_class, key=itemgetter(0), reverse=True)
+
+from operator import itemgetter
+
+
+def sort_by_name(my_class):
+    return sorted(my_class, key=itemgetter(1))
+def sortStringsToAnagram(strings):
+  sortedDict = {}
+  for strng in strings:
+    key = ''.join(sorted(strng))
+    print key
+    if key in sortedDict:
+      sortedDict[key].append(strng)
+    else:
+      sortedDict[key] = [strng]
+  out = []
+  for key in sortedDict:
+    for strng in sortedDict[key]:
+      out.append(strng)
+  return out
+
+def main():
+  test = ["god", "a","abc","c","bac","dog"]
+  out = sortStringsToAnagram(test)
+  print out
+
+main()
+def is_sorted(a):
+	a.sort()
+	return a
+
+
+print is_sorted([2,1,3])
+
+
+
+
+from collections import OrderedDict
+import operator
+
+
+def sort_constituencies_by_party_popularity(constituencies, party):
+    sorted_constituencies = OrderedDict(sorted(constituencies.iteritems(),
+                                               key=lambda x: x[1][party]))
+    sorted_constituencies = reversed(sorted_constituencies)
+    return sorted_constituencies
+
+
+def sort_parties_by_seats(party_seats):
+    sorted_seats = sorted(party_seats.items(),
+                          key=operator.itemgetter(1),
+                          reverse=True)
+    return sorted_seats
+
+
+def allocate_seats(constit, party_seats):
+    """
+    For the given dict of constituencies and the votes per party they have,
+    and the given dictionary of seats per party, allocate an MP/seat to each
+    constituency on a first-come-first-served basis, ranked by popularity.
+    """
+    constituencies = dict(constit)
+    constituency_seats = {}
+    for constituency, _ in constituencies.items():
+        constituency_seats[constituency] = ''
+    sorted_seats = sort_parties_by_seats(party_seats)
+    for party, seats in sorted_seats:
+        allocated = 0
+        sorted_constituencies = sort_constituencies_by_party_popularity(
+            constituencies, party)
+        for constituency in sorted_constituencies:
+            if allocated == seats:
+                break
+            constituency_seats[constituency] = party
+            constituencies.pop(constituency)
+            allocated += 1
+    return constituency_seats
+def break_words(stuff) :
+	""" This function will break up words for us. """
+	words = stuff.split(' ')
+	return words
+
+def sort_words(words) :
+	""" Sort the words """
+	return sorted(words)
+
+def print_first_word(words) :
+	""" Prints the first word after popping it off. """
+	word = words.pop(0)
+	print(word)
+
+def print_last_word(words) :
+	word = words.pop(-1)
+	print(word)
+
+def sort_sentence(sentence) :
+	""" Takes in a full sentence and returns the sorted words """
+	words = break_words(sentence)
+	print_first_word(words)
+	print_last_word(words)
+
+
+def sort(list):
+    """Return a sorted list. You can't use python sort method"""
+
+    print("Develop me, please! I'm begging.")
+
+if __name__ == '__main__':
+    sort([13, 2, 1, 0])try:
+    sorted
+except:
+    def sorted(data):
+        data = list(data)
+        data.sort()
+        return data
+import itertools
+def top10(data, howtosort):
+    return list(itertools.islice(howtosort(data), 10))
+def comparator(a, b):
+    if a[0] / float(a[1]) > b[0] / float(b[1]):
+        return 1
+    elif a[0] / float(a[1]) == b[0] / float(b[1]):
+        return 0
+    return -1
+
+
+def sort_fractions(fractions):
+    return sorted(fractions, comparator)
+
+print (sort_fractions([(2, 3), (1, 2)]))
+print (sort_fractions([(2, 3), (1, 2), (1,3)]))
+from random import Random
+
+class BogoSort(object):
+	def sort(self, list):
+		while not self.isSorted(list):
+			self.shuffle(list)
+		return list
+
+	def isSorted(self, list):
+		return sorted(list) == list
+
+	def shuffle(self, list):
+		Random().shuffle(list)
+		return list
+
+
+
+
+
+def selection_sort(arr):
+
+	unsorted_sz = len(arr)
+	i = 0
+
+
+	while i < unsorted_sz:
+
+		lowest = i
+		j = i + 1
+
+		while j < unsorted_sz:
+			if arr[j] < arr[lowest]:
+				lowest = j
+			j = j + 1
+
+
+		tmp = arr[lowest]
+		arr[lowest] = arr[i]
+		arr[i] = tmp
+
+		i = i + 1
+	return
+
+
+t1 = range(1, 11)
+t1.reverse()
+t1_sorted = t1[:]
+t1_sorted.sort()
+selection_sort(t1)
+if t1 == t1_sorted:
+	print "success"
+else:
+	print "sort failed"
+
+
+t2 = range(1, 1001)
+t2.reverse()
+t2_sorted = t2[:]
+t2_sorted.sort()
+selection_sort(t2)
+if t2 == t2_sorted:
+	print "success"
+else:
+	print "sort failed"
+
+
+
+try:
+
+
+    [].sort(key=lambda: None)
+
+    def sorted(iterable, cmp=None, key=None, reverse=False):
+        l = list(iterable)
+        l.sort(cmp=cmp, key=key, reverse=reverse)
+        return l
+
+except TypeError:
+
+
+    def sorted(iterable, key=None, reverse=False):
+        l = list(iterable)
+        if key:
+            l = [(key(i), i) for i in l]
+        l.sort()
+        if key:
+            l = [i[1] for i in l]
+        if reverse:
+            l.reverse()
+        return l
+__author__ = 'cenk'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def maximumGap(A):
+    if len(A) == 1:
+        return 0
+    B = []
+    for index,i in enumerate(A):
+        B.append((i,index))
+
+    B = sorted(B,key=lambda tup: tup[0])
+
+    indexes = [i[1] for i in B]
+
+    ans = 0
+    maxIndex =  indexes[len(indexes) -1]
+
+    for i in range(0,len(indexes))[::-1]:
+
+        ans = max(ans,maxIndex - indexes[i])
+        maxIndex = max(maxIndex, indexes[i])
+
+    return ans
+
+print maximumGap([ 2,3,5,1,6 ])
+
+
+
+
+
+
+
+
+
+
+
+
+def main():
+	a = [1, 20, 55,10,15]
+	b = []
+	b = middle(a)
+	print 'Old : ', a
+	print 'New :', b
+	c =[]
+	a.sort()
+	print 'Old Sorted : ',a
+	print 'New Sorted : ',middle(a)
+
+def middle(a):
+	b = []
+	b = a[1:4]
+	return b
+
+if __name__=='__main__':
+	main()
+
+"""Write a method to sort an array of strings so that all the anagrams
+are next to each other"""
+
+
+def anagram_sort(words):
+    return sorted(words,  key=lambda x: sorted(x))
+
+
+def test_anagram_sort():
+    words = ['tabu', 'ate',  'beta', 'bade', 'tuba', 'abet',
+             'tea', 'abut', 'bead', 'abed', 'beat', 'eat']
+    print words
+    print anagram_sort(words)
+
+
+def main():
+    test_anagram_sort()
+
+
+if __name__ == '__main__':
+    main()
+def breakWords(stuff):
+	return stuff.split(' ')
+
+def sortWords(words):
+	return sorted(words)
+
+def printFirstWord(words):
+	print words.pop(0)
+
+def printLastWord(words):
+ 	return words.pop(-1)
+
+def sortSentence(sentence):
+	return sortWords(breakWords(sentence))
+
+def printFirstAndLast(sentence):
+	words = breakWords(sentence)
+	printFirstWord(words)
+	printLastWord(words)
+
+def printFirstAndLastSorted(sentence):
+	words = sortSentence(sentence)
+	printFirstWord(words)
+	printLastWord(words)from create_list import random_list, is_sorted
+
+
+def bubble_sort(my_list):
+    """
+    Perform bubble sort on my_list.
+    """
+    while not is_sorted(my_list):
+        for i in range(len(my_list) - 1):
+            if my_list[i] > my_list[i + 1]:
+                my_list[i], my_list[i + 1] = my_list[i + 1], my_list[i]
+    return my_list
+
+my_list = random_list(50)
+print(my_list)
+print(is_sorted(my_list))
+
+sorted_list = bubble_sort(my_list)
+print(sorted_list)
+print(is_sorted(sorted_list))
+import math
+import random
+
+l = []
+for i in range(0,2 ** 24):
+    l.append(i)
+
+random.shuffle(l)
+
+print "sort start"
+
+def sort(l):
+    if len(l) == 1 or len(l) == 0:
+        return l
+    pivot = random.choice(l)
+    less = []
+    more = []
+    for i in l:
+        if i < pivot:
+            less.append(i)
+        else:
+            more.append(i)
+    print abs(len(more) - len(less))
+    return sort(less) + sort(more)
+
+def abs(n):
+    return max(n, -n)
+
+def isSorted(l):
+    prev = l[0];
+    for i in l:
+        if i < prev:
+            return False
+        else:
+            prev = i
+    return True
+
+l2 = sort(l)
+print "sort done"
+
+print isSorted(l2)
+
+import sys, random;
+
+def merge_min_sort_rec(list, depth):
+	if (len(list) <= 1):
+		return list;
+	print ' '*depth, "sorting list len", len(list);
+
+	divpt = len(list)/2;
+	listx = list[0:divpt];
+	listy = list[divpt:len(list)];
+	sorted_lx = merge_min_sort_rec(listx, depth+1);
+	sorted_ly = merge_min_sort_rec(listy, depth+1);
+	sorted = [];
+	x = 0;
+	y = 0;
+	while ((x < len(sorted_lx)) and \
+	(y < len(sorted_ly))):
+		if (sorted_lx[x][1] < sorted_ly[y][1]):
+			sorted.append(sorted_lx[x]);
+			x += 1;
+		else:
+			sorted.append(sorted_ly[y]);
+			y += 1;
+	sorted += sorted_lx[x:];
+	sorted += sorted_ly[y:];
+	print ' '*depth, "returning list", len(list);
+	return sorted;
+
+def merge_min_sort(list):
+	newlist = merge_min_sort_rec(list, 0);
+	return newlist;
+
+def choose_inequality(elemx, elemy, choice):
+	if (not(choice)):
+		if (elemx < elemy):
+			return 1;
+		else:
+			return 0;
+	else:
+		if (elemx > elemy):
+			return 1;
+		else:
+			return 0;
+
+def merge_sort_rec(list, maxmin, display, depth):
+	if (len(list) <= 1):
+		if (display):
+			print ' '*depth, list;
+		return list;
+	if (display):
+		print ' '*depth, "sorting list len", len(list);
+
+	divpt = len(list)/2;
+	listx = list[0:divpt];
+	listy = list[divpt:len(list)];
+	sorted_lx = merge_sort_rec(listx, maxmin, display, depth+1);
+	sorted_ly = merge_sort_rec(listy, maxmin, display, depth+1);
+
+	sorted = [];
+	x = 0;
+	y = 0;
+	while (choose_inequality(x, len(sorted_lx), 0) and \
+	choose_inequality(y, len(sorted_ly), 0)):
+		if (choose_inequality(sorted_lx[x][1], sorted_ly[y][1], maxmin)):
+			sorted.append(sorted_lx[x]);
+			x += 1;
+		else:
+			sorted.append(sorted_ly[y]);
+			y += 1;
+	sorted += sorted_lx[x:];
+	sorted += sorted_ly[y:];
+	if (display):
+		print ' '*depth, "returning list", len(list);
+	return sorted;
+
+def merge_sort(list, maxmin, display):
+	newlist = merge_sort_rec(list, maxmin, display, 0);
+
+	return newlist;
+
+
+
+
+
+
+
+
+pairs_A = [int(s) for s in open("Median.txt").read().rstrip().split()]
+l = [1, 2, 3, 4, 5]
+
+def medians(array):
+	m_k = 0
+	sorted_list = []
+	medians = []
+	for element in array:
+		sorted_list.append(element)
+		sorted_list.sort()
+		print len(sorted_list)
+		if len(sorted_list)%2 == 0:
+			m_k = sorted_list[len(sorted_list)/2-1]
+		elif len(sorted_list) == 1:
+			m_k = sorted_list[0]
+		elif len(sorted_list)%2 == 1:
+
+			m_k = sorted_list[(len(sorted_list)+1)/2-1]
+		else:
+			return "error"
+		print "m_k = " , m_k , "\n"
+		medians.append(m_k)
+	return sum(medians)%10000
+
+print "sum"
+print medians(pairs_A)a = [2,1,-4,3,0,6]
+a.sort()
+print a
+b = "rksdubtheynjmpwqzlfiovxgac"
+print sorted(b,None,lambda x: ord(x))
+c = [2,1,-4,3,0,6]
+print sorted(c)
+print sorted(c, lambda x, y: y - x);
+
+class Test:
+    def __init__(self, id, value):
+        self.id = id
+        self.value = value
+    def __repr__(self):
+        return "id: " + str(self.id) + " value: " + self.value
+
+d = [ Test(4, "test"), Test(3, "test"), Test(6, "test"), Test(1, "test"), Test(2, "test"), Test(9, "test"), Test(0, "test") ]
+print sorted(d, lambda x, y: y - x, lambda x: x.id, True)
+
+print c
+print sorted(c, None, None, True)
+
+c.sort(reverse=True)
+print c
+c.sort()
+print c
+c.sort(lambda x, y: y - x, lambda x: pow(x, 2), True)
+print c
+
+L = [7, 3, -2, 4]
+d = {'a': 5, 'b': 9}
+
+def g(k):
+    return d[k]
+
+print(g('a'))
+print(sorted(d.keys(), None, g))
+
+print(sorted(d.keys(), None, None))
+
+print(sorted(d.keys(), None, lambda x: d[x]))
+
+def myabs(x):
+    return abs(x)
+
+print(sorted(L, None, myabs))
+print(sorted(L, None, lambda x: myabs(x)))
+
+print(sorted(L, None, lambda x: abs(x)))
+
+print(sorted(L, None, abs))
+
+print(sorted(L, key=lambda x: -x, reverse=True))
+
+print(sorted(L, key=lambda x: -x))def keynat(string):
+    r'''A natural sort helper function for sort() and sorted()
+    without using regular expression.
+
+    >>> items = ('Z', 'a', '10', '1', '9')
+    >>> sorted(items)
+    ['1', '10', '9', 'Z', 'a']
+    >>> sorted(items, key=keynat)
+    ['1', '9', '10', 'Z', 'a']
+    '''
+    r = []
+    for c in string:
+        try:
+            c = int(c)
+            try: r[-1] = r[-1] * 10 + c
+            except: r.append(c)
+        except:
+            r.append(c)
+    return r   import random
+'''
+02 Median of Two Sorted Arrays
+https://oj.leetcode.com/problems/median-of-two-sorted-arrays/
+There are two sorted arrays A and B of size m and n respectively.
+Find the median of the two sorted arrays.
+The overall run time complexity should be O(log (m+n)).
+'''
+
+def createRandList(n,a,b):
+    A = []
+    for i in range(n):
+        A.append(random.randint(a,b))
+    return A
+
+
+def isEven(i):
+    return True if i&1 == 0 else False
+
+
+def mergeTwoSorted(A,B):
+    if len(A) == 0:
+        return B
+    if len(B) == 0:
+        return A
+
+    C = []
+    i = 0
+    j = 0
+    while i< len(A) and j < len(B):
+        if A[i] < B[j]:
+            C.append(A[i])
+            i += 1
+        else:
+            C.append(B[j])
+            j += 1
+    while i< len(A):
+        C.append(A[i])
+        i += 1
+    while j< len(B):
+        C.append(B[j])
+        j += 1
+    return C
+'''
+median of a sorted list
+'''
+def medianSorted(A,s,l):
+    if l & 1 == 0:
+        return (float(A[(l>>1)+s]) + float(A[(l>>1)+s-1])) / 2.0
+    else:
+        return A[(l>>1)+s]
+
+def medianTwoSortedRec(A, sa, la, B, sb, lb):
+
+    if (la >=0 and la < 3) or (lb >= 0 and lb < 3):
+        C = mergeTwoSorted(A,B)
+        return medianSorted(C,0,len(C))
+
+
+    ca = (la>>1)-1 if isEven(la) else la>>1
+    cb = (lb>>1)-1 if isEven(lb) else lb>>1
+    c = min(ca,cb)
+    ma = medianSorted(A,sa,la)
+    mb = medianSorted(B,sb,lb)
+    if ma < mb:
+        return medianTwoSortedRec(A,sa+c,la-c,B,sb,lb-c)
+    else:
+        return medianTwoSortedRec(A,sa,la-c,B,sb+c,lb-c)
+
+def medianTwoSorted(A, B):
+    return medianTwoSortedRec(A,0,len(A),B,0,len(B))
+
+def main():
+    repeat = 5
+    for i in range(repeat):
+        n = i+5
+        A = createRandList(n,i*2,(i+n)*2)
+        B = createRandList(n+1,i*2,(i+n)*2)
+        A.sort()
+        B.sort()
+        print A
+        print B
+        print medianTwoSorted(A,B)
+
+
+        C = mergeTwoSorted(A,B)
+        print C
+        print medianSorted(C,0,len(C))
+
+if __name__ == "__main__":
+    main()
+import random
+from collections import deque
+
+def quick_sort(l):
+    if len(l) < 2:
+        return l
+    piv = random.randint(0, len(l)-1)
+    smaller = []
+    larger = []
+
+
+    for item in l[0:piv]:
+        if item > l[piv]:
+            larger.append(item)
+        else:
+            smaller.append(item)
+
+    for item in l[piv+1:]:
+        if item > l[piv]:
+            larger.append(item)
+        else:
+            smaller.append(item)
+
+    sorted_smlr = quick_sort(smaller)
+    sorted_lrgr = quick_sort(larger)
+    return sorted_smlr + [l[piv]] + sorted_lrgr
+
+
+def merge_sort(l):
+    if len(l) < 2:
+        return l
+    l1 = l[0:len(l)/2]
+    l2 = l[len(l)/2:]
+    print "l1:%s" % l1
+    print "l2:%s" % l2
+
+    sorted_l1 = deque(merge_sort(l1))
+    sorted_l2 = deque(merge_sort(l2))
+    sorted_l = []
+
+    while len(sorted_l1) > 0 and len(sorted_l2) > 0:
+        if sorted_l1[0] > sorted_l2[0]:
+            sorted_l.append(sorted_l2.popleft())
+        else:
+            sorted_l.append(sorted_l1.popleft())
+
+    if len(sorted_l1) > 0:
+        sorted_l += list(sorted_l1)
+
+    if len(sorted_l2) > 0:
+        sorted_l += list(sorted_l2)
+
+    return sorted_l
+
+
+if __name__ == '__main__':
+    import numpy as np
+    import datetime
+
+
+
+    sizes = [20]
+
+    for siz in sizes:
+
+        l = np.random.randint(siz, size=siz)
+        print "source: %s" % l
+
+        t0 = datetime.datetime.now()
+
+
+        result = merge_sort(l)
+
+        dt = datetime.datetime.now() - t0
+
+        print "result: %s" % result
+        print "%d\t%d days %d seconds %d microsecondsecs" % (siz, dt.days, dt.seconds, dt.microseconds)
+
+
+def merge_sort(sort_me):
+	'''
+	merge_sort(list) uses merge sort algorithm to sort a list.
+	It accepts a list and returns a sorted list.
+
+	>>> my_list = merge_sort(my_list)
+	'''
+	if len(sort_me) < 2:
+		return sort_me
+	mid = int(len(sort_me)/2)
+	lower = merge_sort(sort_me[:mid])
+	upper = merge_sort(sort_me[mid:])
+	merge = []
+
+	i, j = 0, 0
+	while i < len(lower) and j < len(upper):
+		if lower[i] <= upper[j]:
+			merge.append(lower[i])
+			i += 1
+		else:
+			merge.append(upper[j])
+			j += 1
+	merge += lower[i:]
+	merge += upper[j:]
+	return merge
+
+
+
+import sys
+import random
+import time
+class Sort(object):
+
+    def __init__(self, i):
+        self.sorted_list = []
+        for i in range(1, i+1):
+            self.sorted_list.append(i)
+
+    def shuffle(self):
+        i = len(self.sorted_list) - 1
+        while i > 0:
+            j = random.randint(0, i)
+            tmp = self.sorted_list.pop(j)
+            self.sorted_list.insert(j, self.sorted_list[i-1])
+            self.sorted_list.pop(i)
+            self.sorted_list.insert(i,tmp)
+            i = i-1
+        return self.sorted_list
+
+    def sort(self):
+       return self._rec_sort(self.sorted_list)
+
+    def _rec_sort(self, L):
+        if len(L) <= 1:
+            return L
+        pivot = L.pop(random.randint(0,len(L)-1))
+        less = []
+        greater = []
+        for i in L:
+            if i <= pivot:
+                less.append(i)
+            else:
+                greater.append(i)
+        return (self._rec_sort(less) + [pivot] + self._rec_sort(greater))
+
+    def get_list(self):
+        return self.sorted_list
+
+    def set_list(self, newlist):
+        if isinstance(newlist, list):
+            self.sorted_list = newlist
+        else:
+            print "Bad!"
+
+args = 100
+if len(sys.argv) > 1:
+    args = int(sys.argv[1])
+a = Sort(args)
+print "Starting list:\n\n" + str(a.get_list()) + "\n\n"
+shuffledlist = a.shuffle()
+print "Shuffled list:\n\n" + str(shuffledlist) + "\n\n"
+sorted_listlist = a.sort()
+print "sorted_list list:\n\n" + str(sorted_listlist) + "\n\n"
+
+def merge_sort(to_sort_list):
+    if len(to_sort_list) == 1:
+        return to_sort_list
+    half = len(to_sort_list) / 2
+    to_sort_list[:] = merge(merge_sort(to_sort_list[:half]), merge_sort(to_sort_list[half:]))
+    return to_sort_list
+
+def merge(left_list, right_list):
+    left_pos = right_pos = 0
+    sorted_list = []
+    while True:
+        if left_list[left_pos] < right_list[right_pos]:
+            sorted_list.append(left_list[left_pos])
+            left_pos = left_pos + 1
+            if left_pos == len(left_list):
+                sorted_list = sorted_list + right_list[right_pos:]
+                break
+        else:
+            sorted_list.append(right_list[right_pos])
+            right_pos = right_pos + 1
+            if right_pos == len(right_list):
+                sorted_list = sorted_list + left_list[left_pos:]
+                break
+    return sorted_list
+
+to_sort_list = [54, 26, 93, 17, 77, 31, 44, 55, 20]
+merge_sort(to_sort_list)
+print to_sort_list
+from django import template
+register = template.Library()
+
+@register.filter
+def hash(h, key):
+    return h[key]
+
+@register.filter
+def sort_hash(h, key):
+    return sorted(h[key], key=lambda x: x.lower())
+def merge_sort(unsorted):
+    """ Base case """
+    if len(unsorted) <= 1:
+        return unsorted
+
+    """ Split array into two halves """
+    mid = len(unsorted) // 2
+    left_half = merge_sort(unsorted[:mid])
+    right_half = merge_sort(unsorted[mid:])
+
+    return merge(left_half, right_half)
+
+def merge(left_half, right_half):
+    """ Compare halves and merge into sorted list """
+    sorted_list = []
+
+    while len(left_half) > 0 and len(right_half) > 0:
+        if left_half[0] < right_half[0]:
+            sorted_list.append(left_half.pop(0))
+        else:
+            sorted_list.append(right_half.pop(0))
+
+    if len(left_half) > 0:
+        sorted_list.extend(left_half)
+
+    if len(right_half) > 0:
+        sorted_list.extend(right_half)
+
+    return sorted_list
+
+unsorted = [98, 35, 28, 44, 10, 6, 110]
+print merge_sort(unsorted)
+
+
+def ThirdGreatest(ary):
+
+	myDict = {}
+
+
+
+	for i in range(len(ary)):
+		myDict[ary[i]] = i
+
+
+	sortedByLength = sorted(myDict, key=len, reverse=True)
+
+
+
+	if len(sortedByLength[1]) == len(sortedByLength[2]):
+
+		if myDict[sortedByLength[1]] > myDict[sortedByLength[2]]:
+			return sortedByLength[1]
+		else:
+			return sortedByLength[2]
+	elif len(sortedByLength[2]) == len(sortedByLength[3]):
+		if myDict[sortedByLength[2]] > myDict[sortedByLength[3]]:
+			return sortedByLength[2]
+		else:
+			return sortedByLength[3]
+	else:
+		return sortedByLength[2]
+
+def main():
+
+	result = ThirdGreatest(["hello", "world", "after", "all"] )
+	print result
+
+if __name__ == "__main__":
+  main()class Solution:
+
+
+
+
+    def containsNearbyAlmostDuplicate(self, nums, k, t):
+        if len(nums) == 0:
+            return False
+
+        sorted_array = []
+        for idx in range(len(nums)):
+            sorted_array.append((idx, nums[idx]))
+
+        sorted_array.sort(key=lambda x: x[1])
+
+        for each in range(len(nums)):
+            target = each+1
+
+            while target < len(nums) and sorted_array[target][1] - sorted_array[each][1] <= t:
+                if abs(sorted_array[target][0] - sorted_array[each][0]) <= k:
+                    return True
+                else:
+                    target += 1
+
+        return Falsedef is_sorted(a):
+	a.sort()
+	return a
+
+
+print is_sorted([2,1,3])
+"""
+An implementation of counting sort.
+"""
+
+import random
+
+def counting_sort(array):
+	"""
+	Perform a counting sort.
+
+	Args:
+		array (list of ints): An array of integers.
+
+	Returns:
+		A pointer to the sorted copy of `array`.
+	"""
+
+	min_val = min(array)
+	max_val = max(array)
+	counts = [0] * (max_val - min_val + 1)
+
+	for item in array:
+		counts[item + min_val] += 1
+
+	sorted_arr = []
+	for ind in xrange(len(counts)):
+		for repetition in xrange(counts[ind]):
+			sorted_arr.append(ind + min_val)
+
+	return sorted_arr
+
+def test_counting_sort():
+	"""
+	Test `counting_sort()` against Python's inbuilt `sorted()`.
+
+	If `counting_sort()` fails to correctly sort an array, print a message
+	containing both the original array and the array after the attempted sort.
+	"""
+
+	for i in xrange(100):
+		arr = range(-50, 50)
+		random.shuffle(arr)
+
+		sorted_arr = counting_sort(arr)
+		if sorted_arr != sorted(arr):
+			print (
+				"counting sort() failed.\n"
+				"\tOriginal: %s\n\tAttempted sort: %s"
+			) % (arr, sorted_arr)
+
+if __name__ == "__main__":
+	test_counting_sort()
+SORT_BY = 'field'
+ORDER = 'order'
+
+
+class StandardDicSort(object):
+
+    def __init__(self, *sort_field):
+        self.sort_field = sort_field
+        super(StandardDicSort, self).__init__()
+
+    def sort_by(self, request, to_be_sorted):
+        sort_key = request.GET.get(SORT_BY)
+        if sort_key in self.sort_field:
+            return sorted(to_be_sorted, key=lambda d: d.get(sort_key), reverse=request.GET.get(ORDER) == 'desc')
+        return to_be_sortedfrom listQfile import ListQ
+
+class Sort(ListQ):
+    def __init__(self, unsortedList):
+        self.items = unsortedList
+        self.sortedList = []
+        self.magicSort()
+
+    def __str__(self):
+    	s = ''
+    	for n in self.sortedList:
+    		s = s + str(n) + ' '
+    	return s
+
+
+    def magicSort(self):
+        while not self.isEmpty():
+            self.put(self.get())
+            self.sortedList.append(self.get())def selection_sort(A):
+
+    for i in range(len(A)):
+        minval = float("inf")
+        minindx = -1
+        for j in range(i,len(A)):
+            if A[j] < minval:
+                minval = A[j]
+                minindx = j
+        A[i], A[minindx] = A[minindx], A[i]
+
+    return A
+
+assert selection_sort([4,8,3,7,2,6,1,5,0]) == sorted([4,8,3,7,2,6,1,5,0])
+
+__author__ = 'steve1281'
+
+store = []
+
+def sort_by_last_letter(strings):
+    def last_letter(s):
+        return s[-1];
+    store.append(last_letter)
+    print(last_letter)
+    return sorted(strings, key=last_letter)
+
+def bubble_sort(a):
+    sorted = False
+    while not sorted:
+        sorted = True
+        for i in range(1, len(a)):
+            if a[i] < a[i-1]:
+                a = a[:i-1] + a[i] + a[i-1] + a[i+1:]
+                sorted = False
+    return a
+
+
+    def __init__(self, items):
+        self._items = list(items)
+
+    def add(self, item):
+        self._items.append(item)
+
+    def __getitem__(self, index):
+        return self._items[index]
+
+    def sort(self):
+        self._items.sort()
+
+    def __len__(self):
+        return len(self._items)
+
+    def __repr__(self):
+        return "SimpleList({!r})".format(_items)
+
+
+class SortedList(SimpleList):
+    def __init__(self, items=()):
+        super().__init__(items)
+        self.sort()
+
+    def add(self, item):
+        super().add(item)
+        self.sort()
+
+    def __repr__(self):
+        return "SortedList({!r})".format(list(self))
+
+class IntList(SimpleList):
+    def __init__(self, items=()):
+        for x in items: self._validate(x)
+        super().__init__(items)
+
+    @staticmethod
+    def _validate(x):
+        if not isinstance(x, int):
+            raise TypeError('IntList only supports integer values.')
+
+    def add(self, item):
+        self._validate(item)
+        super().add(item)
+
+    def __repr__(self):
+        return "IntList({!r})".format(list(self))
+
+class SortedIntList(IntList, SortedList):
+    def __repr__(self):
+        return 'SortedIntList({!r})'.format(list(self))def bubble_sort(l):
+  is_sorted = False
+
+  counter = 0
+  while is_sorted == False:
+    is_sorted = True
+
+    for i in range(len(l) - 1):
+      num1, num2 = l[i], l[i+1]
+      if num1 > num2:
+        is_sorted = False
+        l[i], l[i+1] = num2, num1
+  return l
+
+print bubble_sort([6, 5, 3, 1, 8, 7, 2, 4])
+def break_words(text):
+    words = text.split(' ')
+    return words
+
+
+def sort_words(words):
+    sorted_words = sorted(words)
+    return sorted_words
+
+
+def print_first_word(words):
+    word = words.pop(0)
+    print word
+
+
+def print_last_word(words):
+    word = words.pop(-1)
+    print word
+
+
+def sort_sentence(sentence):
+    words = break_words(sentence)
+    sorted_words = sort_words(words)
+    return sorted_words
+
+
+def print_first_and_last_word_sentence(sentence):
+    words = break_words(sentence)
+    print_first_word(words)
+    print_last_word(words)
+
+
+def print_first_and_last_word_soted_sentence(sentence):
+    words = break_words(sentence)
+    sorted_words = sort_words(words)
+    print_first_word(sorted_words)
+
+
+    print_last_word(sorted_words)
+def sort_fractions(fractions):
+	arr = sorted(fractions,key = lambda x : x[0]/x[1])
+	return arr"""
+Given two sorted integer arrays A and B, merge B into A as one sorted array.
+
+Example
+A = [1, 2, 3, empty, empty], B = [4, 5]
+
+After merge, A will be filled as [1, 2, 3, 4, 5]
+"""
+
+class Solution:
+    """
+    @param A: sorted integer array A which has m elements,
+              but size of A is m+n
+    @param B: sorted integer array B which has n elements
+    @return: void
+    """
+
+
+
+
+
+    def mergeSortedArray(self, A, m, B, n):
+        i = m - 1
+        j = n - 1
+        index = m + n - 1
+        while i >= 0 and j >= 0:
+            if A[i] > B[j]:
+                A[index] = A[i]
+                index -= 1
+                i -= 1
+            else:
+                A[index] = B[j]
+                index -= 1
+                j -= 1
+
+        while i >= 0:
+            A[index] = A[i]
+            index -= 1
+            i -= 1
+        while j >= 0:
+            A[index] = B[j]
+            index -= 1
+            j -= 1
+
+
+A = [1, 2, 3, '-inf', '-inf']
+B = [2, 5]
+Sol = Solution()
+Sol.mergeSortedArray(A, 3, B, 2)
+print Aimport random
+from time import time
+
+__author__ = 'rabbi'
+
+
+class ShellSort:
+    def __init__(self, unSortedList):
+        self.unSortedList = unSortedList
+
+    def shellSort(self):
+        """
+        Shell Sort
+        """
+        gap = len(self.unSortedList) // 2
+
+        while gap > 0:
+
+            for i in range(gap, len(self.unSortedList)):
+                val = self.unSortedList[i]
+                j = i
+                while j >= gap and self.unSortedList[j - gap] > val:
+                    self.unSortedList[j] = self.unSortedList[j - gap]
+                    j -= gap
+                self.unSortedList[j] = val
+            gap //= 2
+
+        return self.unSortedList
+
+
+if __name__ == '__main__':
+    unSortedList = [12, 10, 8, 5, 9, 13, 20, 18, 17, 2, 4, 5, 1]
+    for i in range(100000):
+        unSortedList.append(random.randint(1, 50000))
+    shellSort = ShellSort(unSortedList)
+    startTime = time()
+    sortedList = shellSort.shellSort()
+    endTime = time()
+    print sortedList
+    print "Execution Time: %f" % (endTime - startTime)
+from zope.viewlet.manager import ViewletManagerBase
+
+class SortingViewletManager(ViewletManagerBase):
+
+    def sort(self, viewlets):
+        return sorted(viewlets)
+
+
+__author__ = "bt3"
+
+
+
+
+def insertion_sort(seq):
+    ''' sort a sequence using the insertion sort alg '''
+    for i in range(1, len(seq)):
+        j = i
+        while j > 0 and seq[j-1] > seq[j]:
+            seq[j-1], seq[j] = seq[j], seq[j-1]
+            j -= 1
+    return seq
+
+
+def insertion_sort_rec(seq, i = None):
+    ''' sort a sequence using the recursive insertion sort alg '''
+    if i == None: i = len(seq) -1
+    if i == 0: return i
+    insertion_sort_rec(seq, i-1)
+    j = i
+    while j > 0 and seq[j-i] > seq[j]:
+        seq[j-1], seq[j] = seq[j], seq[j-1]
+        j -= 1
+    return seq
+
+
+def test_insertion_sort():
+    seq = [3, 5, 2, 6, 8, 1, 0, 3, 5, 6, 2, 5, 4, 1, 5, 3]
+    assert(insertion_sort(seq) == sorted(seq))
+    assert(insertion_sort_rec(seq) == sorted(seq))
+
+
+if __name__ == '__main__':
+    test_insertion_sort()
+
+
+
+
+
+
+
+
+from __future__ import unicode_literals
+import pytest
+from structures.insertion_sort import insertion_sort
+
+
+@pytest.fixture
+def sorted_list():
+    return [i for i in xrange(10)]
+
+
+@pytest.fixture
+def reverse_list():
+    return [i for i in xrange(9, -1, -1)]
+
+
+@pytest.fixture
+def average_list():
+    return [5, 9, 2, 4, 1, 6, 8, 7, 0, 3]
+
+
+def test_sorted(sorted_list):
+    insertion_sort(sorted_list)
+    assert sorted_list == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
+def test_worst(reverse_list):
+    insertion_sort(reverse_list)
+    assert reverse_list == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
+def test_average(average_list):
+    insertion_sort(average_list)
+    assert average_list == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
+def test_repeats():
+    l = [3, 6, 7, 3, 9, 5, 2, 7]
+    insertion_sort(l)
+    assert l == [2, 3, 3, 5, 6, 7, 7, 9]
+
+
+def test_multiple_types():
+    l = [3, 'foo', 2.8, True, []]
+
+    insertion_sort(l)
+    assert l == [True, 2.8, 3, [], 'foo']
+
+
+import random
+
+def get_random_list(num=10):
+    l = range(0, num)
+    random.shuffle(l)
+    return l
+
+def is_sorted(l):
+    for i in range(0, len(l)-1):
+        if l[i] > l[i+1]:
+            return False
+    return True
+
+def quick_sort(nums=[]):
+    quick_sort.cnum = 0
+    quick_sort.swaps = 0
+    def swap(l, i, j):
+        if i == j:
+            return
+        temp = l[i]
+        l[i] = l[j]
+        l[j] = temp
+        quick_sort.swaps +=1
+
+    def sublist_sort(nums, a, b):
+        if a >= b:
+            return
+        pivot = nums[b]
+        i = a
+        j = b-1
+        while i<=j:
+            while nums[i] < pivot:
+                quick_sort.cnum +=1
+                if i >= b:
+                    break
+                i += 1
+
+            while nums[j] >= pivot:
+                quick_sort.cnum +=1
+                if j <= a:
+                    break
+                j -= 1
+            if i<j:
+                swap(nums, i, j)
+                i += 1
+                j -= 1
+            else:
+                break
+
+        swap(nums, i, b)
+        sublist_sort(nums, a, i-1)
+        sublist_sort(nums, i+1, b)
+
+    if len(nums) > 0:
+        sublist_sort(nums, 0, len(nums)-1)
+
+def quick_sort2(nums=[]):
+    if len(nums) == 0:
+        return []
+    else:
+        return quick_sort2([x for x in nums[1:] if x < nums[0]]) + [nums[0]] + quick_sort2([x for x in nums[1:] if x>=nums[0]])
+
+if __name__ == '__main__':
+    l = get_random_list(20)
+    print l
+    quick_sort(l)
+    print l
+    print "Sorted: %s,
+
+def swap_lis(lis, i):
+	lis[i], lis[i + 1] = lis[i + 1], lis[i]
+      	return 0
+
+def sort(lis, limit):
+	for i in range(limit):
+		[swap_lis(lis, j) if lis[j] > lis[j + 1] for j in range(limit)]
+	return lis
+
+
+lis = input("enter the list\n")
+limit = len(lis) - 1
+lis_sorted = sort(lis, limit)
+print "the sorted list is %r"%(lis_sorted)
+
+
+import pygame
+
+class MergeSort():
+  """docstring for MergeSort"""
+  def __init__(self):
+    pass
+
+  def RecursiveSort(self, l):
+    """docstring for sort2"""
+
+    if len(l) == 1:
+      return (l, 0)
+
+
+    half_size = len(l)/2
+    l1 = l[:half_size]
+    l2 = l[half_size:]
+
+    l1_sorted, l1_complexity = self.RecursiveSort(l1)
+    l2_sorted, l2_complexity = self.RecursiveSort(l2)
+
+
+    algorithm_complexity = 0
+    l_sorted = []
+    x = 0
+    y = 0
+    while True:
+      algorithm_complexity += 2
+      if l1_sorted[x] < l2_sorted[y]:
+        l_sorted.append(l1_sorted[x])
+        x += 1
+        if x >= len(l1_sorted):
+          l_sorted += l2_sorted[y:]
+          break
+      else:
+        l_sorted.append(l2_sorted[y])
+        y += 1
+        if y >= len(l2_sorted):
+          l_sorted += l1_sorted[x:]
+          break
+    return (l_sorted, algorithm_complexity + l1_complexity + l2_complexity)
+
+class Element():
+  """docstring for Animation"""
+  def __init__(self, elem, pos):
+    self.elem = elem
+    self.pos = pos
+
+  def getRect(self):
+    self.rect = pygame.Rect(self.pos * 10, 0, 1, self.elem)
+
+  def changePos(self, new_pos):
+    self.pos = new_pos
+
+  def update(self):
+     pygame.display.update()
+
+  def Iteration(self):
+    self.getRect()
+    self.update()
+
+def main():
+  animation = MergeSort()
+
+if __name__ == '__main__':
+  main()
+
+
+
+
+
+
+from compare import cmp
+
+def quicksortCmp(c, toSort):
+    if len(toSort) <= 1:
+        return toSort
+
+    end = len(toSort) - 1
+    pivot = toSort[end]
+
+    low = []
+    high = []
+
+    for num in toSort[:end]:
+        if  cmp(c, num, pivot, (num <= pivot)):
+            low.append(num)
+        else:
+            high.append(num)
+
+    sortedList = quicksortCmp(c, low)
+    sortedList.append(pivot)
+    sortedList.extend(quicksortCmp(c, high))
+    return sortedList
+
+def quicksort(A):
+	c = []
+	x = quicksortCmp(c, A)
+	return c
+
+
+
+def sortOnMedia(data):
+    sortedData = sorted(data, key=lambda x: x.getMedia())
+    return sortedData
+
+def sortOnCompany(data):
+    sortedData = sorted(data, key=lambda x: x.getCompany())
+    return sortedData
+
+def sortOnCategory(data):
+    sortedData = sorted(data, key=lambda x: x.getCategory())
+    return sortedData
+
+def sortOnCategorySize(data):
+    """
+    Assume that the data input is a list sorted by category
+    """
+    categories = []
+    for i in data:
+        if len(categories) == 0:
+            categories.append([i])
+        else:
+            if i.getCategory() == categories[-1][-1].getCategory():
+                categories[-1].append(i)
+            else:
+                categories.append([i])
+
+    sortedCategories = sorted(categories, key=lambda x: len(x), reverse=True)
+    sortedData = []
+    for category in sortedCategories:
+        for i in category:
+            sortedData.append(i)
+    return sortedData
+
+def sortInput(data):
+    data = sortOnCompany(data)
+    data = sortOnMedia(data)
+    data = sortOnCategory(data)
+    data = sortOnCategorySize(data)
+    return data
+
+def insertion_sort(A):
+    n = len(A)
+    for j in range(2,n):
+        key = A[j]
+        i = j-1
+        while i > 0 and A[i]>key:
+            A[i+1] = A[i]
+            i = i-1
+        A[i+1] = key
+    return A
+if __name__ == '__main__':
+    A = [3,7,6,5,5,5,34,56]
+    print "A:", A
+    print "Sorted array after insertion sort", insertion_sort(A)import numpy as np
+r=[['a', 'a', 'a', 'b','c','c','c','c'],[1,2,3,13],[4,5,6,14],[7,8,9,15],[10,11,12,16,4,5,6,14]]
+
+d={r[0][z]:[p[z] for p in r[1:] if z<=len(r[1])-1] for z in xrange(0,len(r[0]))}
+
+def chardiv(lst):
+    def pairs(xs):
+      for p in zip(xs[:-1], xs[1:]):
+        yield p
+    sortOrder=[i[0] for i in sorted(enumerate(lst[0]), key=lambda x:x[1], reverse=False)]
+    sortedIndep=[i[1] for i in sorted(enumerate(lst[0]), key=lambda x:x[1], reverse=False)]
+    sortedDep=[lst[1][z] for z in sortOrder]
+    cuts=[];divs=[]
+    for x in xrange(1,len(sortedIndep)):
+      if not sortedIndep[x-1]==sortedIndep[x]:
+        cuts.append(x)
+    cuts.insert(0, 0); cuts.insert(len(cuts),len(sortOrder))
+    for x,y in pairs(cuts):
+      print x, y
+      divs.append([sortedIndep[x],np.std(sortedDep[x:y]),[(sortedIndep[z], sortedDep[z]) for z in xrange(x,y)]])
+    return divs
+
+print chardiv([r[0],r[4]])class Solution:
+
+    def findMedianSortedArrays(self, A, B):
+        C = A + B
+        C.sort()
+        l = len(C)
+        if l % 2 == 0:
+        	return float(C[l/2] + C[l/2-1]) / 2
+        else:
+        	return float(C[l/2])
+
+
+if __name__ == '__main__':
+	s = Solution()
+	a = [3,2,1,9,8]
+	b = [3,6,4]
+	print s.findMedianSortedArrays(a, b)
+unsorted_lists = [
+    [3, 4, 6, 5],
+    [9, 8, 7, 6, 5, 4, 3, 2, 1],
+    [1, 2, 3, 5, 6, 7, 9, 0],
+    [-1, -5, -3, -4],
+    [4, 3, 2, 1, 9, 8, 7, 6, 5],
+]
+
+
+def merge_sort(unsorted_list):
+
+    if len(unsorted_list) <= 1:
+        return unsorted_list
+    mid = len(unsorted_list) // 2
+    left_half = merge_sort(unsorted_list[:mid])
+    right_half = merge_sort(unsorted_list[mid:])
+
+
+
+
+    sorted_list = []
+    i, k = 0, 0
+    while i < len(left_half) and k < len(right_half):
+        if left_half[i] < right_half[k]:
+            sorted_list.append(left_half[i])
+            i += 1
+        else:
+            sorted_list.append(right_half[k])
+            k += 1
+
+    sorted_list.extend(left_half[i:])
+    sorted_list.extend(right_half[k:])
+
+    return sorted_list
+
+
+if __name__ == '__main__':
+
+
+    for ulist in unsorted_lists:
+        print(merge_sort(ulist))
+
+def break_words(stuff):
+
+    w = stuff.split(' ')
+    return w
+
+def words_sorted(w):
+
+    s = sorted(w)
+    return s
+
+def print_first_word(w):
+
+    p = w.pop(0)
+    return p
+
+def print_last_word(w):
+
+    p = w.pop(-1)
+    return p
+
+def sort_sentence(s):
+
+    w = break_words(s)
+    return words_sorted(w)
+
+def print_first_and_last(s):
+
+    w = break_words(s)
+    return print_first_word(w), print_last_word(w)
+
+def print_f_n_l_sorted(s):
+    w = sort_sentence(s)
+    return print_first_word(w), print_last_word(w)
+
+
+ss = "All good things come to those who wait."
+w = break_words(ss)
+
+q1 = break_words(ss)
+print '1 ', q1
+q2 = words_sorted(w)
+print '2 ', q2
+q3 = print_first_word(w)
+print '3 ', q3
+q4 = print_last_word(w)
+print '4 ', q4
+q5 = sort_sentence(ss)
+print '5 ', q5
+q6 = print_first_and_last(ss)
+print '6 ', q6
+q7 = print_f_n_l_sorted(ss)
+print '7 ', q7
+
+
+try:
+    sorted
+except:
+    def sorted(data):
+        data = list(data)
+        data.sort()
+        return data
+import itertools
+def top10(data, howtosort):
+    return list(itertools.islice(howtosort(data), 10))
+
+
+
+def radix_sort(list_1d,num_digits):
+    for digit in range(num_digits):
+        current_digits=[(x/(10**digit))%10 for x in list_1d]
+        (sorted_list_digits,sorted_list_index)=counting_sort(current_digits,9)
+        sorted_list=[list_1d[sorted_list_index[i]] for i in range(len(sorted_list_index))]
+        list_1d=sorted_list
+    return list_1d
+
+
+print radix_sort([345,999,765,764,444,789,300],3)
+print radix_sort([3,100,2],3)
+print radix_sort([3,2],1)
+print radix_sort([2,3],1)
+print radix_sort([1,3,2,3,4,5,6,7,0,2,3,99,50,10],2)

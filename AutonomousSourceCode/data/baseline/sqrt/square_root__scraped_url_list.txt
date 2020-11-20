@@ -1,0 +1,10 @@
+/majapklm/think_python/blob/ac17c5820bd70d19ee43c29fdcdd96872718aa03/chap7/7_2squareroot.py
+/TeenaV/Practice/blob/184d8c3a1734a0e9439badf284e17aab7417885c/power.py
+/lovelyzoo/bootcamp/blob/701fd0721586efbe6f1ddf6bdb7ea06b341799ca/power.py
+/jobiaj/Think_python/blob/cbeba0c6576a6b5092accc8717fb749cb2c1bc27/chapter_7/test_square_rrot.py
+/simonalderton/SCBC-soton/blob/4fc006362fe38bbd86250107b13f138c1e708208/power.py
+/nadahalli/algorithm-puzzles/blob/2687f56d6d0251bec0561a8f393756900ff28718/square_root.py
+/samuelyusunwang/PythonStudy/blob/36f666dbb6eae1ead5bf22c7cf79d3fab354ff44/Think%20Python/Exercise/Ex_7_2.py
+/AtamaC/PHYS200/blob/a562597b6fe5fd2d052ce95109fc3a8729f70fdc/Chapter_7/Exercise_7.3.py
+/jobiaj/Think_python/blob/cbeba0c6576a6b5092accc8717fb749cb2c1bc27/chapter_7/test_square_rrot_1.py
+/Nalinc/TCProject-FOSSEE/blob/265bdd75393477e76e608ca032d3e8a2d2937d56/Chap8/8.8.py

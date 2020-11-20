@@ -1,0 +1,158 @@
+def power(x):
+    return x**2
+
+def square_root(x):
+    return np.sqrt(x)
+
+
+def square_root(s):
+    i = 1
+    j = s
+    while (abs(j - i) > 0.001):
+        print i, j
+        j = (i + j) / 2.0
+        i = s * 1.0/j
+    return i
+
+print square_root(100)
+
+import math
+
+def square_root(a,x):
+    for i  in a:
+         	y = (x + i/x) / 2
+              return y
+
+def math_squrt(a,x):
+	for j  in a: 
+		m = math.sqrt(j)
+ 		return m
+
+def test_square_root(a,x):
+	for k in a:
+
+		     m = math_squrt(k,x)
+    		     y = square_root(k,x)
+     		     c = m - y
+    		 print a ,'         ',  m ,'                ', y,'          ', c
+
+
+test_square_root(range(10),3)
+
+
+# square_root()
+
+def square_root(a):
+    '''
+    Use x(n+1) = [x(n) + a/x(n)]/2 to calculate square root of a
+    '''
+    e = 1
+    x = a / 2
+    while e >= 0.0000001:
+        y = (x + a/x) / 2
+        e = abs(y-x)
+        x = y
+    return y
+
+
+# Test code
+print(square_root(1))
+
+#8.8.py
+#Calculating the Square Root of a Number using Newton-Raphson Method 
+
+
+#Function to return absolute value
+def absoluteValue(x):        
+        if(x<0):
+           x=-x
+        return x
+
+#function to calculate square root
+def squareRoot(x):
+        epsilon=0.0001
+        guess=1.0
+        while(absoluteValue(guess*guess-x)>=epsilon):
+                guess=(x/guess+guess)/2.0
+        return guess
+
+#Main()
+def main():
+        print("squareRoot (2.0) = {0}".format(squareRoot (2.0)));
+        print("squareRoot (144.0) = {0}".format(squareRoot (144.0)));
+        print("squareRoot (17.5) = {0}".format(squareRoot (17.5)));
+
+#Setting top level conditional script
+if __name__=='__main__':
+        main()
+
+
+
+def square_root(n):
+	n=float(n)
+	x=n/2
+	i=0
+	while i<10:
+		x=((x+n)/x)/2
+		i=i+1
+	return x
+
+print square_root(9)
+
+import math
+
+def square_root(a):
+	x = a/2.0
+	epsilon = 0.0000000001
+	while True:
+		y = (x + a/x) / 2
+		if abs(y-x) < epsilon:
+			break
+		x = y
+	return x
+
+def test_square_root(a):
+	i = 1.0	
+	while i <= a:
+		print i,
+		print square_root(i),
+		print math.sqrt(i),
+		print abs(square_root(i) - math.sqrt(i))
+		i = i + 1
+
+test_square_root(9)
+
+
+
+def power(x):
+	return x ** 2
+
+def square_root(x):
+	return np.sqrt(x)
+
+import math
+
+def square_root(a,x):
+    y = (x + a/x) / 2
+    return y
+
+def math_squrt(a,x):
+     m = math.sqrt(a)
+     return m
+
+def test_square_root(a,x):
+     m = math_squrt(a,x)
+     y = square_root(a,x)
+     c = m - y 
+     print a ,'		',  m ,'		', y,'		', c
+
+
+test_square_root(2,3)
+
+def power(x):
+
+	return x**2
+
+def square_root(x):
+
+        return np.sqrt(x)
