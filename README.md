@@ -1,5 +1,5 @@
-# AutomatousSourceCode
-Stanford CS221 Final Project (grade received 105% out of 100%)
+# AutomatousSourceCode (built in 2015)
+Stanford CS221 Final Project from 2015 (grade received 105% out of 100%)
 By Erick Miller
 
 ## Abstract
